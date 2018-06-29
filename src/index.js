@@ -80,13 +80,13 @@ function findRestaurants(intentRequest) {
   } = slots;
 
   const restaurants = searchRestaurants({ price, cuisine, suburb });
-  const message = `I found ${restaurants.length} ${price} ${cuisine} restaurants in ${suburb}! Here they are:\n` + restaurants.map(((restaurant) => {
+  let message = `I found ${restaurants.length} ${price} ${cuisine} restaurant${restaurants.length === 1 ? '' : 's'} in ${suburb}! Here they are:\n`;
+  message += restaurants.map(((restaurant) => {
     const { name, suburb, price } = restaurant;
-    return `"${}`
+    return `"${name}" in ${suburb}`;
   })).join('\n');
-  return close(message, {
-    sessionAttributes
-  });
+
+  return close(message, { sessionAttributes });
 }
 
 function routeIntentRequest(intentRequest) {

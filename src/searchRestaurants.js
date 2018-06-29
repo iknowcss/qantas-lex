@@ -12,4 +12,4 @@ function searchRestaurants(query) {
   ];
 }
 
-exports = searchRestaurants;
+module.exports = searchRestaurants;
