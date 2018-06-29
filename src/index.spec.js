@@ -3,29 +3,27 @@ const index = require('./index');
 describe('lambda entry', () => {
   it('does something', async () => {
     const responseJson = await expect(index.handler({
-      "currentIntent": {
-        "slots": {
-          "AppointmentType": "whitening",
-          "Date": "2030-11-08",
-          "Time": "10:00"
-        },
-        "name": "MakeAppointment",
-        "confirmationStatus": "None"
-      },
-      "bot": {
-        "alias": "$LATEST",
-        "version": "$LATEST",
-        "name": "MakeAppointment"
-      },
-      "userId": "John",
-      "invocationSource": "DialogCodeHook",
-      "outputDialogMode": "Text",
-      "messageVersion": "1.0",
-      "sessionAttributes": {}
+      "dialogState": "ElicitSlot",
+      "intentName": "FindRestaurant",
+      "message": "What kind of food are you looking for?",
+      "messageFormat": "PlainText",
+      "responseCard": null,
+      "sessionAttributes": {},
+      "slotToElicit": "Cuisine",
+      "slots": {
+        "Cuisine": null,
+        "Price": null
+      }
     })).to.be.fulfilled;
 
     expect(JSON.parse(responseJson)).to.eql({
-      message: 'Hello!'
+      "dialogAction": {
+        "type": "ElicitIntent",
+        "message": {
+          "contentType": "PlainText",
+          "content": "What kind of restaurant are you looking for?"
+        }
+      }
     });
   });
 });
