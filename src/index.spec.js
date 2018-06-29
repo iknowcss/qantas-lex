@@ -48,9 +48,9 @@ describe('lambda entry', () => {
           type: 'ElicitIntent',
           message: {
             contentType: "PlainText",
-            content: 'What kind of restaurant are you looking for?'
+            content: 'What kind of restaurant are you interested in?'
           }
-        },
+        }
       });
     });
   });
@@ -139,6 +139,25 @@ describe('lambda entry', () => {
             ]
           }
         },
+      });
+    });
+
+    it('fails a request with no results', async () => {
+      searchRestaurantsStub.returns([]);
+
+      const result = await expect(handler(buildFindRestaurantsRequest({
+        slots: { CuisineSlot: 'Thai', SuburbSlot: 'Newtown', PriceSlot: 'cheap' }
+      }))).to.be.fulfilled;
+
+      expect(result).to.eql({
+        sessionAttributes: {},
+        dialogAction: {
+          type: 'ElicitIntent',
+          message: {
+            contentType: "PlainText",
+            content: 'I couldn\'t find any restaurants matching that criteria. What other kind of restaurant are interested in?'
+          }
+        }
       });
     });
   });

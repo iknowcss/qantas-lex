@@ -63,7 +63,7 @@ function findSpendIdeas(intentRequest) {
       "type": "ElicitIntent",
       "message": {
         "contentType": "PlainText",
-        "content": "What kind of restaurant are you looking for?"
+        "content": "What kind of restaurant are you interested in?"
       }
     }
   };
@@ -85,9 +85,24 @@ function findRestaurants(intentRequest) {
   } = slots;
 
   const restaurants = searchRestaurants({ price, cuisine, suburb });
+  if (restaurants.length <= 0) {
+    const sessionAttributes = intentRequest.sessionAttributes || {};
+
+    return {
+      sessionAttributes,
+      "dialogAction": {
+        "type": "ElicitIntent",
+        "message": {
+          "contentType": "PlainText",
+          "content": 'I couldn\'t find any restaurants matching that criteria. What other kind of restaurant are interested in?'
+        }
+      }
+    };
+  }
+
+
   let message = `I found ${restaurants.length} ${price} ${cuisine} restaurant${restaurants.length === 1 ? '' : 's'} in ${suburb}!`;
 
-  const restaurant = restaurants[0];
   return close(message, { sessionAttributes, responseCard: {
     contentType: 'application/vnd.amazonaws.card.generic',
     genericAttachments: restaurants.map((restaurant) => {
