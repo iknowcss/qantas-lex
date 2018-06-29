@@ -1,4 +1,4 @@
-const { findRestaurants } = require('./index');
+const { handler, findRestaurants } = require('./index');
 
 describe('lambda entry', () => {
   xdescribe('HowSpend intent', () => {
@@ -53,10 +53,10 @@ describe('lambda entry', () => {
       };
     }
 
-    it('delegates a request with no slots', () => {
-      const result = findRestaurants(buildFindRestaurantsRequest({
+    it('delegates a request with no slots', async () => {
+      const result = await expect(handler(buildFindRestaurantsRequest({
         slots: { Cuisine: null, Suburb: null, Price: null }
-      }));
+      }))).to.be.fulfilled;
 
       expect(result).to.eql({
         sessionAttributes: {},
@@ -67,10 +67,10 @@ describe('lambda entry', () => {
       });
     });
 
-    it('fulfills a request with all slots filled', () => {
-      const result = findRestaurants(buildFindRestaurantsRequest({
+    it('fulfills a request with all slots filled', async () => {
+      const result = await expect(handler(buildFindRestaurantsRequest({
         slots: { Cuisine: 'Thai', Suburb: 'Newtown', Price: 'cheap' }
-      }));
+      }))).to.be.fulfilled;
 
       expect(result).to.eql({
         sessionAttributes: {},

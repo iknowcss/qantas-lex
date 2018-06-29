@@ -65,7 +65,7 @@ function delegate(sessionAttributes, slots) {
 
 // --------------- Intents -------------------------------------------------------------------------
 
-exports.findSpendIdeas = function findSpendIdeas(intentRequest) {
+function findSpendIdeas(intentRequest) {
   const { IdeaType } = intentRequest.currentIntent.slots;
   const source = intentRequest.invocationSource;
   const outputSessionAttributes = intentRequest.sessionAttributes || {};
@@ -83,7 +83,7 @@ exports.findSpendIdeas = function findSpendIdeas(intentRequest) {
   };
 }
 
-exports.findRestaurants = function findRestaurants(intentRequest) {
+function findRestaurants(intentRequest) {
   const slots = intentRequest.currentIntent.slots;
   const source = intentRequest.invocationSource;
   const sessionAttributes = intentRequest.sessionAttributes || {};
@@ -120,7 +120,7 @@ function routeIntentRequest(intentRequest) {
   switch (name) {
     case 'HowSpend':
       return findSpendIdeas(intentRequest);
-    case 'FindRestaurants':
+    case 'FindRestaurant':
       return findRestaurants(intentRequest);
     default:
       throw new Error(`Intent "${name}" not supported`);
@@ -132,5 +132,9 @@ function routeIntentRequest(intentRequest) {
 exports.handler = async (event) => {
   console.log('Lex request event', event);
 
-  return routeIntentRequest(event);
+  const response = routeIntentRequest(event);
+
+  console.log('Lambda response', response);
+
+  return response;
 };
