@@ -1,6 +1,7 @@
 const data = require('./data.json');
 
 function searchRestaurants(query) {
+  const { price, cuisine, suburb } = query;
   return [
     {
       "name": "Saké",
