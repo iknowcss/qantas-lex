@@ -7,21 +7,39 @@ const LOG_LEVEL = {
   INFO: 3,
   TRACE: 3
 };
-const logLevel = LOG_LEVEL.SILENT;
+const logLevel = (process.env.LOG_LEVEL ? LOG_LEVEL[process.env.LOG_LEVEL.toUpperCase()] : null) || LOG_LEVEL.SILENT;
 const logger = {
-  trace: (...args) => logLevel >= LOG_LEVEL.TRACE ? console.log(...args) : null,
-  info: (...args) => logLevel >= LOG_LEVEL.INFO ? console.info(...args) : null,
-  warn: (...args) => logLevel >= LOG_LEVEL.WARN ? console.warn(...args) : null,
-  error: (...args) => logLevel >= LOG_LEVEL.ERROR ? console.error(...args) : null
+  trace: (...args) => logLevel >= LOG_LEVEL.TRACE ? console.log('[TRACE]', ...args) : null,
+  info: (...args) => logLevel >= LOG_LEVEL.INFO ? console.info('[INFO]', ...args) : null,
+  warn: (...args) => logLevel >= LOG_LEVEL.WARN ? console.warn('[WARN]', ...args) : null,
+  error: (...args) => logLevel >= LOG_LEVEL.ERROR ? console.error('[ERROR]', ...args) : null
 };
 
-function delegate(options) {
+function delegate(options = {}) {
   return {
     sessionAttributes: options.sessionAttributes || {},
     dialogAction: {
       type: 'Delegate',
       slots: options.slots || {},
     }
+  }
+}
+
+function close(content, options = {}) {
+  if (!content) {
+    throw new Error('Content argument is required');
+  }
+
+  return {
+    sessionAttributes: options.sessionAttributes || {},
+    dialogAction: {
+      type: 'Close',
+      fulfillmentState: options.fulfillmentState || 'Fulfilled',
+      message: {
+        contentType: options.contentType || 'PlainText',
+        content
+      },
+    },
   }
 }
 
@@ -54,17 +72,10 @@ function findRestaurants(intentRequest) {
     return delegate({ sessionAttributes, slots });
   }
 
-  return {
-    sessionAttributes: {},
-    dialogAction: {
-      type: 'Close',
-      fulfillmentState: 'Fulfilled',
-      message: {
-        contentType: 'PlainText',
-        content: `I found 3 ${slots.Price} ${slots.Cuisine} restaurants in ${slots.Suburb}! Here they are:`
-      },
-    },
-  };
+  const message = `I found 3 ${slots.Price} ${slots.Cuisine} restaurants in ${slots.Suburb}! Here they are:`;
+  return close(message, {
+    sessionAttributes
+  });
 }
 
 function routeIntentRequest(intentRequest) {
