@@ -125,16 +125,14 @@ describe('lambda entry', () => {
           fulfillmentState: 'Fulfilled',
           message: {
             contentType: 'PlainText',
-            content: 'I found 1 cheap Thai restaurant in Newtown!'
+            content: 'Here\'s what I found!'
           },
           responseCard: {
             contentType: 'application/vnd.amazonaws.card.generic',
             genericAttachments: [
               {
                 title: '\"undefined\" in undefined',
-                subTitle: ' | $undefined and up',
-                imageUrl: undefined,
-                attachmentLinkUrl: undefined
+                subTitle: ' | $undefined and up'
               }
             ]
           }

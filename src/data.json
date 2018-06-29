@@ -55,6 +55,14 @@
       "price": "40",
       "imageUrl": "",
       "linkUrl": ""
+    },
+    {
+      "name": "Dumpling King",
+      "suburb":  "Newtown",
+      "cuisine": ["chinese"],
+      "price": "20",
+      "imageUrl": "",
+      "linkUrl": ""
     }
   ]
 }

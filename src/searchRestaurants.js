@@ -1,9 +1,5 @@
 const data = require('./data.json');
 
-// casual
-// street food
-// fine dining
-
 function priceClassToRange(priceClass) {
   switch (priceClass.toLowerCase()) {
     case 'street food':

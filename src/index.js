@@ -100,10 +100,7 @@ function findRestaurants(intentRequest) {
     };
   }
 
-
-  let message = `I found ${restaurants.length} ${price} ${cuisine} restaurant${restaurants.length === 1 ? '' : 's'} in ${suburb}!`;
-
-  return close(message, { sessionAttributes, responseCard: {
+  return close('Here\'s what I found!', { sessionAttributes, responseCard: {
     contentType: 'application/vnd.amazonaws.card.generic',
     genericAttachments: restaurants.map((restaurant) => {
       const name = restaurant.name;
@@ -113,11 +110,9 @@ function findRestaurants(intentRequest) {
       const imageUrl = restaurant.imageUrl;
       const linkUrl = restaurant.linkUrl;
 
-      return {
+      const result = {
         title: `"${name}" in ${suburb}`,
         subTitle: `${cuisine.join(', ')} | ${formatPrice(price)}`,
-        imageUrl: imageUrl,
-        attachmentLinkUrl: linkUrl,
         // buttons: [
         //   {
         //     text: 'button-text',
@@ -125,6 +120,16 @@ function findRestaurants(intentRequest) {
         //   }
         // ]
       };
+
+      if (imageUrl) {
+        result.imageUrl = imageUrl;
+      }
+
+      if (linkUrl) {
+        result.attachmentLinkUrl = linkUrl;
+      }
+
+      return result;
     })
   }});
 }
