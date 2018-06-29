@@ -68,11 +68,11 @@ function findRestaurants(intentRequest) {
   const source = intentRequest.invocationSource;
   const sessionAttributes = intentRequest.sessionAttributes || {};
 
-  if (!slots.Cuisine || !slots.Price || !slots.Suburb) {
+  if (!slots.CuisineSlot || !slots.PriceSlot || !slots.SuburbSlot) {
     return delegate({ sessionAttributes, slots });
   }
 
-  const message = `I found 3 ${slots.Price} ${slots.Cuisine} restaurants in ${slots.Suburb}! Here they are:`;
+  const message = `I found 3 ${slots.PriceSlot} ${slots.CuisineSlot} restaurants in ${slots.SuburbSlot}! Here they are:`;
   return close(message, {
     sessionAttributes
   });
