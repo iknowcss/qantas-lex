@@ -1,66 +1,28 @@
 /// - Util -----------------------------------------------------------------------------------------
 
-function elicitSlot(sessionAttributes, intentName, slots, slotToElicit, message, responseCard) {
-  return {
-    sessionAttributes,
-    dialogAction: {
-      type: 'ElicitSlot',
-      intentName,
-      slots,
-      slotToElicit,
-      message,
-      responseCard,
-    },
-  };
-}
+const LOG_LEVEL = {
+  SILENT: 0,
+  ERROR: 1,
+  WARN: 2,
+  INFO: 3,
+  TRACE: 3
+};
+const logLevel = LOG_LEVEL.SILENT;
+const logger = {
+  trace: (...args) => logLevel >= LOG_LEVEL.TRACE ? console.log(...args) : null,
+  info: (...args) => logLevel >= LOG_LEVEL.INFO ? console.info(...args) : null,
+  warn: (...args) => logLevel >= LOG_LEVEL.WARN ? console.warn(...args) : null,
+  error: (...args) => logLevel >= LOG_LEVEL.ERROR ? console.error(...args) : null
+};
 
-function elicitIntent(sessionAttributes, intentName, slots, slotToElicit, message, responseCard) {
+function delegate(options) {
   return {
-    sessionAttributes,
-    dialogAction: {
-      type: 'ElicitIntent',
-      intentName,
-      slots,
-      slotToElicit,
-      message,
-      responseCard,
-    },
-  };
-}
-
-function confirmIntent(sessionAttributes, intentName, slots, message, responseCard) {
-  return {
-    sessionAttributes,
-    dialogAction: {
-      type: 'ConfirmIntent',
-      intentName,
-      slots,
-      message,
-      responseCard,
-    },
-  };
-}
-
-function close(sessionAttributes, fulfillmentState, message, responseCard) {
-  return {
-    sessionAttributes,
-    dialogAction: {
-      type: 'Close',
-      fulfillmentState,
-      message,
-      responseCard,
-    },
-  };
-}
-
-function delegate(sessionAttributes, slots) {
-  return {
-    sessionAttributes,
+    sessionAttributes: options.sessionAttributes || {},
     dialogAction: {
       type: 'Delegate',
-      slots,
-    },
-  };
+      slots: options.slots || {},
+    }
+  }
 }
 
 // --------------- Intents -------------------------------------------------------------------------
@@ -89,13 +51,7 @@ function findRestaurants(intentRequest) {
   const sessionAttributes = intentRequest.sessionAttributes || {};
 
   if (!slots.Cuisine || !slots.Price || !slots.Suburb) {
-    return {
-      sessionAttributes,
-      dialogAction: {
-        type: 'Delegate',
-        slots: { Cuisine: null, Suburb: null, Price: null },
-      }
-    };
+    return delegate({ sessionAttributes, slots });
   }
 
   return {
@@ -109,10 +65,10 @@ function findRestaurants(intentRequest) {
       },
     },
   };
-};
+}
 
 function routeIntentRequest(intentRequest) {
-  console.log(`dispatch userId=${intentRequest.userId}, intent=${intentRequest.currentIntent.name}`);
+  logger.trace(`dispatch userId=${intentRequest.userId}, intent=${intentRequest.currentIntent.name}`);
 
   const name = intentRequest.currentIntent.name;
 
@@ -130,11 +86,11 @@ function routeIntentRequest(intentRequest) {
 /// - Entry ----------------------------------------------------------------------------------------
 
 exports.handler = async (event) => {
-  console.log('Lex request event', event);
+  logger.trace('Lex request event', event);
 
   const response = routeIntentRequest(event);
 
-  console.log('Lambda response', response);
+  logger.trace('Lambda response', response);
 
   return response;
 };

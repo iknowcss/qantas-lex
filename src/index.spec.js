@@ -67,6 +67,20 @@ describe('lambda entry', () => {
       });
     });
 
+    it('delegates a request with some slots', async () => {
+      const result = await expect(handler(buildFindRestaurantsRequest({
+        slots: { Cuisine: null, Suburb: 'Coogee', Price: null }
+      }))).to.be.fulfilled;
+
+      expect(result).to.eql({
+        sessionAttributes: {},
+        dialogAction: {
+          type: 'Delegate',
+          slots: { Cuisine: null, Suburb: 'Coogee', Price: null },
+        },
+      });
+    });
+
     it('fulfills a request with all slots filled', async () => {
       const result = await expect(handler(buildFindRestaurantsRequest({
         slots: { Cuisine: 'Thai', Suburb: 'Newtown', Price: 'cheap' }
