@@ -41,8 +41,13 @@ function close(content, options = {}) {
         contentType: options.contentType || 'PlainText',
         content
       },
+      responseCard: options.responseCard
     },
   }
+}
+
+function formatPrice(price) {
+  return `\$${price} and up`;
 }
 
 // --------------- Intents -------------------------------------------------------------------------
@@ -80,13 +85,24 @@ function findRestaurants(intentRequest) {
   } = slots;
 
   const restaurants = searchRestaurants({ price, cuisine, suburb });
-  let message = `I found ${restaurants.length} ${price} ${cuisine} restaurant${restaurants.length === 1 ? '' : 's'} in ${suburb}! Here they are:\n`;
-  message += restaurants.map(((restaurant) => {
-    const { name, suburb, price } = restaurant;
-    return `"${name}" in ${suburb}`;
-  })).join('\n');
+  let message = `I found ${restaurants.length} ${price} ${cuisine} restaurant${restaurants.length === 1 ? '' : 's'} in ${suburb}!`;
 
-  return close(message, { sessionAttributes });
+  const restaurant = restaurants[0];
+  return close(message, { sessionAttributes, responseCard: {
+    contentType: 'application/vnd.amazonaws.card.generic',
+    genericAttachments: restaurants.map((restaurant) => ({
+      title: `"${restaurant.name}" in ${restaurant.suburb}`,
+      subTitle: `${restaurant.cuisine.join(', ')} | ${formatPrice(restaurant.price)}`,
+      imageUrl: restaurant.imageUrl || null,
+      attachmentLinkUrl: 'https://eatdrinkplay.com/sydney/premium-xchange-progressive-dining-as-part-of-argylexchange/argylexchange-sake-the-rocks/',
+      // buttons: [
+      //   {
+      //     text: 'button-text',
+      //     value: 'Value sent to server on button click'
+      //   }
+      // ]
+    }))
+  }});
 }
 
 function routeIntentRequest(intentRequest) {
