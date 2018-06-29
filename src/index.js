@@ -90,18 +90,27 @@ function findRestaurants(intentRequest) {
   const restaurant = restaurants[0];
   return close(message, { sessionAttributes, responseCard: {
     contentType: 'application/vnd.amazonaws.card.generic',
-    genericAttachments: restaurants.map((restaurant) => ({
-      title: `"${restaurant.name}" in ${restaurant.suburb}`,
-      subTitle: `${restaurant.cuisine.join(', ')} | ${formatPrice(restaurant.price)}`,
-      imageUrl: restaurant.imageUrl || null,
-      attachmentLinkUrl: 'https://eatdrinkplay.com/sydney/premium-xchange-progressive-dining-as-part-of-argylexchange/argylexchange-sake-the-rocks/',
-      // buttons: [
-      //   {
-      //     text: 'button-text',
-      //     value: 'Value sent to server on button click'
-      //   }
-      // ]
-    }))
+    genericAttachments: restaurants.map((restaurant) => {
+      const name = restaurant.name;
+      const suburb = restaurant.suburb;
+      const price = restaurant.price;
+      const cuisine = restaurant.cuisine || [];
+      const imageUrl = restaurant.imageUrl;
+      const linkUrl = restaurant.linkUrl;
+
+      return {
+        title: `"${name}" in ${suburb}`,
+        subTitle: `${cuisine.join(', ')} | ${formatPrice(price)}`,
+        imageUrl: imageUrl,
+        attachmentLinkUrl: linkUrl,
+        // buttons: [
+        //   {
+        //     text: 'button-text',
+        //     value: 'Value sent to server on button click'
+        //   }
+        // ]
+      };
+    })
   }});
 }
 

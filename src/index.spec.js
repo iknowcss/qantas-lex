@@ -1,6 +1,16 @@
-const { handler, findRestaurants } = require('./index');
+const proxyquire = require('proxyquire');
+
+const sandbox = sinon.createSandbox();
+const searchRestaurantsStub = sandbox.stub();
+const { handler, findRestaurants } = proxyquire('./index', {
+  './searchRestaurants': searchRestaurantsStub
+});
 
 describe('lambda entry', () => {
+  beforeEach(() => {
+    sandbox.reset();
+  });
+
   describe('HowSpend intent', () => {
     function buildFindSpendIdeasRequest(options) {
       const slots = Object.assign({
@@ -102,6 +112,8 @@ describe('lambda entry', () => {
     });
 
     it('fulfills a request with all slots filled', async () => {
+      searchRestaurantsStub.returns([ {} ]);
+
       const result = await expect(handler(buildFindRestaurantsRequest({
         slots: { CuisineSlot: 'Thai', SuburbSlot: 'Newtown', PriceSlot: 'cheap' }
       }))).to.be.fulfilled;
@@ -113,8 +125,19 @@ describe('lambda entry', () => {
           fulfillmentState: 'Fulfilled',
           message: {
             contentType: 'PlainText',
-            content: 'I found 3 cheap Thai restaurants in Newtown! Here they are:'
+            content: 'I found 1 cheap Thai restaurant in Newtown!'
           },
+          responseCard: {
+            contentType: 'application/vnd.amazonaws.card.generic',
+            genericAttachments: [
+              {
+                title: '\"undefined\" in undefined',
+                subTitle: ' | $undefined and up',
+                imageUrl: undefined,
+                attachmentLinkUrl: undefined
+              }
+            ]
+          }
         },
       });
     });
