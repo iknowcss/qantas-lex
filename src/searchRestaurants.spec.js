@@ -52,6 +52,152 @@ describe('searchRestaurants', () => {
     ]);
   });
 
+  it('handles any cuisine', () => {
+    expect(searchRestaurants({
+      price: 'cheap',
+      cuisine: 'any',
+      suburb: 'newtown'
+    })).to.eql([
+      {
+        "name": "Mad Mex",
+        "suburb":  "Newtown",
+        "cuisine": ["mexican"],
+        "price": "15",
+        "imageUrl": "",
+        "linkUrl": ""
+      },
+      {
+        "name": "Dumpling King",
+        "suburb":  "Newtown",
+        "cuisine": ["chinese"],
+        "price": "20",
+        "imageUrl": "",
+        "linkUrl": ""
+      }
+    ]);
+  });
+
+  it('handles any suburb', () => {
+    expect(searchRestaurants({
+      price: 'any',
+      cuisine: 'mexican',
+      suburb: 'any'
+    })).to.eql([
+      {
+        "name": "Chica Bonita",
+        "suburb":  "Manly",
+        "cuisine": ["mexican"],
+        "price": "40",
+        "imageUrl": "",
+        "linkUrl": ""
+      },
+      {
+        "name": "Mad Mex",
+        "suburb":  "Newtown",
+        "cuisine": ["mexican"],
+        "price": "15",
+        "imageUrl": "",
+        "linkUrl": ""
+      },
+      {
+        "name": "Beach Burrito Co.",
+        "suburb":  "Newtown",
+        "cuisine": ["mexican"],
+        "price": "40",
+        "imageUrl": "",
+        "linkUrl": ""
+      }
+    ]);
+  });
+
+  it('handles less than price range', () => {
+    expect(searchRestaurants({
+      price: 'less than $20',
+      cuisine: 'any',
+      suburb: 'any'
+    })).to.eql([
+      { name: 'Criniti\'s',
+        suburb: 'Castle Hill',
+        cuisine: [ 'Australian' ],
+        price: '20',
+        imageUrl: '',
+        linkUrl: ''
+      },
+      { name: 'Mad Mex',
+        suburb: 'Newtown',
+        cuisine: [ 'mexican' ],
+        price: '15',
+        imageUrl: '',
+        linkUrl: '' },
+      { name: 'Dumpling King',
+        suburb: 'Newtown',
+        cuisine: [ 'chinese' ],
+        price: '20',
+        imageUrl: '',
+        linkUrl: ''
+      }
+    ]);
+  });
+
+  it('handles more than than price range', () => {
+    expect(searchRestaurants({
+      price: 'at least $100',
+      cuisine: 'any',
+      suburb: 'any'
+    })).to.eql([
+      {
+        name: 'Saké',
+        suburb: 'The Rocks',
+        cuisine: [ 'Japanese' ],
+        price: '135',
+        imageUrl: '',
+        linkUrl: ''
+      },
+      {
+        name: 'Catalina',
+        suburb: 'Rose Bay',
+        cuisine: [ 'Australian' ],
+        price: '100',
+        imageUrl: '',
+        linkUrl: ''
+      }
+    ]);
+  });
+
+  it('handles approximate price range', () => {
+    expect(searchRestaurants({
+      price: 'around $20',
+      cuisine: 'any',
+      suburb: 'any'
+    })).to.eql([
+      { name: 'Criniti\'s',
+      suburb: 'Castle Hill',
+      cuisine: [ 'Australian' ],
+      price: '20',
+      imageUrl: '',
+      linkUrl: '' },
+      { name: 'Time for Thai',
+        suburb: 'Coogee',
+        cuisine: [ 'thai' ],
+        price: '30',
+        imageUrl: '',
+        linkUrl: '' },
+      { name: 'Mad Mex',
+        suburb: 'Newtown',
+        cuisine: [ 'mexican' ],
+        price: '15',
+        imageUrl: '',
+        linkUrl: '' },
+      { name: 'Dumpling King',
+        suburb: 'Newtown',
+        cuisine: [ 'chinese' ],
+        price: '20',
+        imageUrl: '',
+        linkUrl: '' }
+        ]
+    );
+  });
+
   it('returns an empty array when there are no matches', () => {
     expect(searchRestaurants({
       price: 'cheap',

@@ -41,6 +41,14 @@
       "linkUrl": ""
     },
     {
+      "name": "Chica Bonita",
+      "suburb":  "Manly",
+      "cuisine": ["mexican"],
+      "price": "40",
+      "imageUrl": "",
+      "linkUrl": ""
+    },
+    {
       "name": "Mad Mex",
       "suburb":  "Newtown",
       "cuisine": ["mexican"],

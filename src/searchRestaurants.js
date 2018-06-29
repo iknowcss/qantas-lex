@@ -1,5 +1,28 @@
 const data = require('./data.json');
 
+function parsePriceString(priceClass) {
+  const lowerString = priceClass.toLowerCase();
+  const numbers = (lowerString.match(/\d+/) || [])[0];
+  if (!numbers) {
+    return { min: 0, max: Infinity };
+  }
+  const parsedNumber = parseInt(numbers, 0);
+  if (/less +than|no +more +than|below|cheaper/.test(lowerString)) {
+    return { min: 0, max: parsedNumber };
+  }
+  if (/more +than|at +least|above|expensive/.test(lowerString)) {
+    return { min: parsedNumber, max: Infinity };
+  }
+  if (/around|about|something +like|approx/.test(lowerString)) {
+    return {
+      min: Math.max(parsedNumber - 10, 0),
+      max: parsedNumber + 10
+    };
+  }
+
+  return { min: 0, max: Infinity };
+}
+
 function priceClassToRange(priceClass) {
   switch (priceClass.toLowerCase()) {
     case 'street food':
@@ -11,7 +34,7 @@ function priceClassToRange(priceClass) {
     case 'expensive':
       return { min: 60, max: Infinity };
     default:
-      return { min: 0, max: Infinity }
+      return parsePriceString(priceClass);
   }
 }
 
@@ -23,10 +46,10 @@ function searchRestaurants(query) {
     const { suburb: rSuburb, cuisine: rCuisines, price: rPriceString } = restaurant;
     const rPrice = parseInt(rPriceString, 10);
 
-    if (rSuburb.toLowerCase() !== suburb.toLowerCase()) {
+    if (suburb.toLowerCase() !== 'any' && rSuburb.toLowerCase() !== suburb.toLowerCase()) {
       return false;
     }
-    if (rCuisines.map(c => c.toLowerCase()).indexOf(cuisine.toLowerCase()) < 0) {
+    if (cuisine.toLowerCase() !== 'any' && rCuisines.map(c => c.toLowerCase()).indexOf(cuisine.toLowerCase()) < 0) {
       return false;
     }
     if (rPrice < priceMin || rPrice > priceMax) {

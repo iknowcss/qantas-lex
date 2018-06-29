@@ -102,7 +102,7 @@ function findRestaurants(intentRequest) {
 
   return close('Here\'s what I found!', { sessionAttributes, responseCard: {
     contentType: 'application/vnd.amazonaws.card.generic',
-    genericAttachments: restaurants.map((restaurant) => {
+    genericAttachments: restaurants.slice(0, 3).map((restaurant) => {
       const name = restaurant.name;
       const suburb = restaurant.suburb;
       const price = restaurant.price;
