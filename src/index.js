@@ -1,3 +1,5 @@
+const searchRestaurants = require('./searchRestaurants');
+
 /// - Util -----------------------------------------------------------------------------------------
 
 const LOG_LEVEL = {
@@ -71,7 +73,17 @@ function findRestaurants(intentRequest) {
     return delegate({ sessionAttributes, slots });
   }
 
-  const message = `I found 3 ${slots.PriceSlot} ${slots.CuisineSlot} restaurants in ${slots.SuburbSlot}! Here they are:`;
+  const {
+    PriceSlot: price,
+    CuisineSlot: cuisine,
+    SuburbSlot: suburb,
+  } = slots;
+
+  const restaurants = searchRestaurants({ price, cuisine, suburb });
+  const message = `I found ${restaurants.length} ${price} ${cuisine} restaurants in ${suburb}! Here they are:\n` + restaurants.map(((restaurant) => {
+    const { name, suburb, price } = restaurant;
+    return `"${}`
+  })).join('\n');
   return close(message, {
     sessionAttributes
   });

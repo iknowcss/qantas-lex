@@ -1,0 +1,34 @@
+{
+  "restaurants": [
+    {
+      "name": "Saké",
+      "suburb":  "The Rocks",
+      "cuisine": ["Japanese"],
+      "price": "135"
+    },
+    {
+      "name": "Criniti's",
+      "suburb":  "Castle Hill",
+      "cuisine": ["Australian"],
+      "price": "20"
+    },
+    {
+      "name": "Rockpool Bar & Grill",
+      "suburb":  "CBD",
+      "cuisine": ["Australian"],
+      "price": "60"
+    },
+    {
+      "name": "Catalina",
+      "suburb":  "Rose Bay",
+      "cuisine": ["Australian"],
+      "price": "100"
+    },
+    {
+      "name": "Time for Thai",
+      "suburb":  "Coogee",
+      "cuisine": ["thai"],
+      "price": "30"
+    }
+  ]
+}
