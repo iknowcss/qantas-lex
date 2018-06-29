@@ -39,6 +39,22 @@
       "price": "30",
       "imageUrl": "",
       "linkUrl": ""
+    },
+    {
+      "name": "Mad Mex",
+      "suburb":  "Newtown",
+      "cuisine": ["mexican"],
+      "price": "15",
+      "imageUrl": "",
+      "linkUrl": ""
+    },
+    {
+      "name": "Beach Burrito Co.",
+      "suburb":  "Newtown",
+      "cuisine": ["mexican"],
+      "price": "40",
+      "imageUrl": "",
+      "linkUrl": ""
     }
   ]
 }
