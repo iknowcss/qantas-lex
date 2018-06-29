@@ -46,19 +46,18 @@ function close(content, options = {}) {
 // --------------- Intents -------------------------------------------------------------------------
 
 function findSpendIdeas(intentRequest) {
-  const { IdeaType } = intentRequest.currentIntent.slots;
-  const source = intentRequest.invocationSource;
-  const outputSessionAttributes = intentRequest.sessionAttributes || {};
-  // const bookingMap = JSON.parse(outputSessionAttributes.bookingMap || '{}');
+  const confirmationStatus = intentRequest.currentIntent.confirmationStatus;
+  const invocationSource = intentRequest.invocationSource;
+  const sessionAttributes = intentRequest.sessionAttributes || {};
 
   return {
+    sessionAttributes,
     "dialogAction": {
       "type": "ElicitIntent",
       "message": {
         "contentType": "PlainText",
         "content": "What kind of restaurant are you looking for?"
-      },
-      "intentName": "FindRestaurant"
+      }
     }
   };
 }

@@ -1,11 +1,14 @@
 const { handler, findRestaurants } = require('./index');
 
 describe('lambda entry', () => {
-  xdescribe('HowSpend intent', () => {
-    it('handles a request with no slots', () => {
-      const result = findRestaurants({
+  describe('HowSpend intent', () => {
+    function buildFindSpendIdeasRequest(options) {
+      const slots = Object.assign({
+        // TODO
+      }, options.slots);
+      return {
         messageVersion: '1.0',
-        invocationSource: 'DialogCodeHook',
+        invocationSource: options.invocationSource || 'DialogCodeHook',
         userId: 'mock-user-id',
         sessionAttributes: {},
         requestAttributes: null,
@@ -16,15 +19,28 @@ describe('lambda entry', () => {
         },
         outputDialogMode: 'Text',
         currentIntent: {
-          name: 'FindRestaurant',
-          slots: { Cuisine: null, Suburb: null, Price: null },
+          name: 'HowSpend',
+          slots,
           confirmationStatus: 'None'
         },
         inputTranscript: 'What restaurants can I spend points at?'
-      });
+      };
+    }
+
+    it('handles a fulfillent request', async () => {
+      const result = await expect(handler(buildFindSpendIdeasRequest({
+        invocationSource: 'FulfillmentCodeHook'
+      }))).to.be.fulfilled;
 
       expect(result).to.eql({
-
+        sessionAttributes: {},
+        dialogAction: {
+          type: 'ElicitIntent',
+          message: {
+            contentType: "PlainText",
+            content: 'What kind of restaurant are you looking for?'
+          }
+        },
       });
     });
   });
