@@ -2,25 +2,28 @@ const data = require('./data.json');
 
 function parsePriceString(priceClass) {
   const lowerString = priceClass.toLowerCase();
-  const numbers = (lowerString.match(/\d+/) || [])[0];
-  if (!numbers) {
+  const numberMatches = (lowerString.match(/(\d+)(?:\D+(\d+))?/) || []);
+  if (!numberMatches) {
     return { min: 0, max: Infinity };
   }
-  const parsedNumber = parseInt(numbers, 0);
+  const numbers = [
+    parseInt(numberMatches[1], 10),
+    parseInt(numberMatches[2], 10)
+  ];
+  if (numbers[0] && numbers[1]) {
+    return { min: numbers[0], max: numbers[1] };
+  }
   if (/less +than|no +more +than|below|cheaper/.test(lowerString)) {
-    return { min: 0, max: parsedNumber };
+    return { min: 0, max: numbers[0] };
   }
   if (/more +than|at +least|above|expensive/.test(lowerString)) {
-    return { min: parsedNumber, max: Infinity };
-  }
-  if (/or so|around|about|something +like|approx/.test(lowerString)) {
-    return {
-      min: Math.max(parsedNumber - 10, 0),
-      max: parsedNumber + 10
-    };
+    return { min: numbers[0], max: Infinity };
   }
 
-  return { min: 0, max: Infinity };
+  return {
+    min: Math.max(numbers[0] - 10, 0),
+    max: numbers[0] + 10
+  };
 }
 
 function priceClassToRange(priceClass) {
@@ -42,12 +45,17 @@ function isAny(s) {
   return /^(whatever|any|any(where|thing)|any +[a-z]+|)$/i.test((s || '').trim().toLowerCase())
 }
 
+function normalizeSuburb(suburb) {
+  const lowerSuburb = suburb.toLowerCase().trim();
+  if (isAny(lowerSuburb) || lowerSuburb === 'sydney') return '*';
+  if (/^(the +)?(cbd|city)$/.test(lowerSuburb)) return 'CBD';
+  return suburb;
+}
+
 function normalizeQuery(query) {
   const { min: priceMin, max: priceMax } = priceClassToRange(query.price);
   const cuisine = isAny(query.cuisine) ? '*' : query.cuisine;
-  let suburb = isAny(query.suburb) ? '*' : query.suburb;
-  if (suburb.toLowerCase() === 'sydney') suburb = '*';
-  return { priceMin, priceMax, cuisine, suburb };
+  return { priceMin, priceMax, cuisine, suburb: normalizeSuburb(query.suburb) };
 }
 
 function searchRestaurants(query) {

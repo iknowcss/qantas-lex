@@ -168,18 +168,14 @@ describe('searchRestaurants', () => {
     ]);
   });
 
-  it('handles approximate price range', () => {
-    expect(searchRestaurants({
-      price: 'around $20',
-      cuisine: '*',
-      suburb: '*'
-    })).to.eql([
+  describe('a price range', () => {
+    const expectedResult = [
       { name: 'Criniti\'s',
-      suburb: 'Castle Hill',
-      cuisine: [ 'Australian' ],
-      price: '20',
-      imageUrl: '',
-      linkUrl: '' },
+        suburb: 'Castle Hill',
+        cuisine: [ 'Australian' ],
+        price: '20',
+        imageUrl: '',
+        linkUrl: '' },
       { name: 'Time for Thai',
         suburb: 'Coogee',
         cuisine: [ 'thai' ],
@@ -198,8 +194,23 @@ describe('searchRestaurants', () => {
         price: '20',
         imageUrl: '',
         linkUrl: '' }
-        ]
-    );
+    ];
+
+    it('handles explicit ranges', () => {
+      expect(searchRestaurants({
+        price: '$10 to $30',
+        cuisine: '*',
+        suburb: '*'
+      })).to.eql(expectedResult);
+    });
+
+    it('handles implicit ranges', () => {
+      expect(searchRestaurants({
+        price: 'around $20',
+        cuisine: '*',
+        suburb: '*'
+      })).to.eql(expectedResult);
+    });
   });
 
   it('returns an empty array when there are no matches', () => {
@@ -222,5 +233,42 @@ describe('searchRestaurants', () => {
       cuisine: 'whatever',
       suburb: 'Sydney'
     })).to.have.length(testData.restaurants.length);
+  });
+
+  it('normalises CBD-like suburbs', () => {
+    const expectedResult = [
+      {
+        "name": "Rockpool Bar & Grill",
+        "suburb":  "CBD",
+        "cuisine": ["Australian"],
+        "price": "60",
+        "imageUrl": "",
+        "linkUrl": ""
+      }
+    ];
+
+    expect(searchRestaurants({
+      price: '*',
+      cuisine: '*',
+      suburb: 'CBD'
+    })).to.eql(expectedResult);
+
+    expect(searchRestaurants({
+      price: '*',
+      cuisine: '*',
+      suburb: 'the cbd'
+    })).to.eql(expectedResult);
+
+    expect(searchRestaurants({
+      price: '*',
+      cuisine: '*',
+      suburb: 'the city'
+    })).to.eql(expectedResult);
+
+    expect(searchRestaurants({
+      price: '*',
+      cuisine: '*',
+      suburb: 'city'
+    })).to.eql(expectedResult);
   });
 });
