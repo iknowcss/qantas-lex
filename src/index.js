@@ -63,7 +63,7 @@ function findSpendIdeas(intentRequest) {
       "type": "ElicitIntent",
       "message": {
         "contentType": "PlainText",
-        "content": "Describe the kind of restaurant you're interested in. You can include cuisine, suburb, and a price point"
+        "content": "Describe what kind of restaurant you're looking for. You can include things like cuisine, suburb, or price point"
       }
     }
   };
