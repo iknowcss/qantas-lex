@@ -38,18 +38,28 @@ function priceClassToRange(priceClass) {
   }
 }
 
+function isAny(s) {
+  return /^(any|anywhere|any +[a-z]+|)$/i.test((s || '').trim().toLowerCase())
+}
+
+function normalizeQuery(query) {
+  const { min: priceMin, max: priceMax } = priceClassToRange(query.price);
+  const cuisine = isAny(query.cuisine) ? '*' : query.cuisine;
+  const suburb = isAny(query.suburb) ? '*' : query.suburb;
+  return { priceMin, priceMax, cuisine, suburb };
+}
+
 function searchRestaurants(query) {
-  const { price, cuisine, suburb } = query;
-  const { min: priceMin, max: priceMax } = priceClassToRange(price);
+  let { cuisine, suburb, priceMin, priceMax } = normalizeQuery(query);
 
   return data.restaurants.filter((restaurant) => {
     const { suburb: rSuburb, cuisine: rCuisines, price: rPriceString } = restaurant;
     const rPrice = parseInt(rPriceString, 10);
 
-    if (suburb !== 'any' && rSuburb.toLowerCase() !== suburb.toLowerCase()) {
+    if (suburb !== '*' && rSuburb.toLowerCase() !== suburb.toLowerCase()) {
       return false;
     }
-    if (cuisine.toLowerCase() !== 'any' && rCuisines.map(c => c.toLowerCase()).indexOf(cuisine.toLowerCase()) < 0) {
+    if (cuisine !== '*' && rCuisines.map(c => c.toLowerCase()).indexOf(cuisine.toLowerCase()) < 0) {
       return false;
     }
     if (rPrice < priceMin || rPrice > priceMax) {

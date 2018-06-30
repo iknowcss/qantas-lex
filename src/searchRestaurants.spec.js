@@ -1,4 +1,8 @@
-const searchRestaurants = require('./searchRestaurants');
+const proxyquire = require('proxyquire');
+const testData = require('./testData.json');
+const searchRestaurants = proxyquire('./searchRestaurants', {
+  './data.json': testData
+});
 
 describe('searchRestaurants', () => {
   it('finds cheap mexican', () => {
@@ -55,7 +59,7 @@ describe('searchRestaurants', () => {
   it('handles any cuisine', () => {
     expect(searchRestaurants({
       price: 'cheap',
-      cuisine: 'any',
+      cuisine: '*',
       suburb: 'newtown'
     })).to.eql([
       {
@@ -79,9 +83,9 @@ describe('searchRestaurants', () => {
 
   it('handles any suburb', () => {
     expect(searchRestaurants({
-      price: 'any',
+      price: '*',
       cuisine: 'mexican',
-      suburb: 'any'
+      suburb: '*'
     })).to.eql([
       {
         "name": "Chica Bonita",
@@ -113,8 +117,8 @@ describe('searchRestaurants', () => {
   it('handles less than price range', () => {
     expect(searchRestaurants({
       price: 'less than $20',
-      cuisine: 'any',
-      suburb: 'any'
+      cuisine: '*',
+      suburb: '*'
     })).to.eql([
       { name: 'Criniti\'s',
         suburb: 'Castle Hill',
@@ -142,8 +146,8 @@ describe('searchRestaurants', () => {
   it('handles more than than price range', () => {
     expect(searchRestaurants({
       price: 'at least $100',
-      cuisine: 'any',
-      suburb: 'any'
+      cuisine: '*',
+      suburb: '*'
     })).to.eql([
       {
         name: 'Saké',
@@ -167,8 +171,8 @@ describe('searchRestaurants', () => {
   it('handles approximate price range', () => {
     expect(searchRestaurants({
       price: 'around $20',
-      cuisine: 'any',
-      suburb: 'any'
+      cuisine: '*',
+      suburb: '*'
     })).to.eql([
       { name: 'Criniti\'s',
       suburb: 'Castle Hill',
@@ -204,5 +208,13 @@ describe('searchRestaurants', () => {
       cuisine: 'japanese',
       suburb: 'CBD'
     })).to.eql([]);
+  });
+
+  it('normalises "any" type queries', () => {
+    expect(searchRestaurants({
+      price: 'any',
+      cuisine: 'any food',
+      suburb: 'anywhere'
+    })).to.have.length(testData.restaurants.length);
   });
 });

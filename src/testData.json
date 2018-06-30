@@ -1,0 +1,76 @@
+{
+  "restaurants": [
+    {
+      "name": "Saké",
+      "suburb":  "The Rocks",
+      "cuisine": ["Japanese"],
+      "price": "135",
+      "imageUrl": "",
+      "linkUrl": ""
+    },
+    {
+      "name": "Criniti's",
+      "suburb":  "Castle Hill",
+      "cuisine": ["Australian"],
+      "price": "20",
+      "imageUrl": "",
+      "linkUrl": ""
+    },
+    {
+      "name": "Rockpool Bar & Grill",
+      "suburb":  "CBD",
+      "cuisine": ["Australian"],
+      "price": "60",
+      "imageUrl": "",
+      "linkUrl": ""
+    },
+    {
+      "name": "Catalina",
+      "suburb":  "Rose Bay",
+      "cuisine": ["Australian"],
+      "price": "100",
+      "imageUrl": "",
+      "linkUrl": ""
+    },
+    {
+      "name": "Time for Thai",
+      "suburb":  "Coogee",
+      "cuisine": ["thai"],
+      "price": "30",
+      "imageUrl": "",
+      "linkUrl": ""
+    },
+    {
+      "name": "Chica Bonita",
+      "suburb":  "Manly",
+      "cuisine": ["mexican"],
+      "price": "40",
+      "imageUrl": "",
+      "linkUrl": ""
+    },
+    {
+      "name": "Mad Mex",
+      "suburb":  "Newtown",
+      "cuisine": ["mexican"],
+      "price": "15",
+      "imageUrl": "",
+      "linkUrl": ""
+    },
+    {
+      "name": "Beach Burrito Co.",
+      "suburb":  "Newtown",
+      "cuisine": ["mexican"],
+      "price": "40",
+      "imageUrl": "",
+      "linkUrl": ""
+    },
+    {
+      "name": "Dumpling King",
+      "suburb":  "Newtown",
+      "cuisine": ["chinese"],
+      "price": "20",
+      "imageUrl": "",
+      "linkUrl": ""
+    }
+  ]
+}
