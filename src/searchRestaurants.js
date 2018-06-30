@@ -46,7 +46,7 @@ function searchRestaurants(query) {
     const { suburb: rSuburb, cuisine: rCuisines, price: rPriceString } = restaurant;
     const rPrice = parseInt(rPriceString, 10);
 
-    if (suburb.toLowerCase() !== 'any' && rSuburb.toLowerCase() !== suburb.toLowerCase()) {
+    if (suburb !== 'any' && rSuburb.toLowerCase() !== suburb.toLowerCase()) {
       return false;
     }
     if (cuisine.toLowerCase() !== 'any' && rCuisines.map(c => c.toLowerCase()).indexOf(cuisine.toLowerCase()) < 0) {

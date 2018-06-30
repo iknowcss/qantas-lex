@@ -63,7 +63,7 @@ function findSpendIdeas(intentRequest) {
       "type": "ElicitIntent",
       "message": {
         "contentType": "PlainText",
-        "content": "What kind of restaurant are you interested in?"
+        "content": "Describe the kind of restaurant you're interested in. You can include cuisine, suburb, and a price point"
       }
     }
   };
@@ -73,6 +73,8 @@ function findRestaurants(intentRequest) {
   const slots = intentRequest.currentIntent.slots;
   const source = intentRequest.invocationSource;
   const sessionAttributes = intentRequest.sessionAttributes || {};
+
+  logger.trace('Slots', slots);
 
   if (!slots.CuisineSlot || !slots.PriceSlot || !slots.SuburbSlot) {
     return delegate({ sessionAttributes, slots });
@@ -84,7 +86,27 @@ function findRestaurants(intentRequest) {
     SuburbSlot: suburb,
   } = slots;
 
-  const restaurants = searchRestaurants({ price, cuisine, suburb });
+  function isAllRestaurantQuery(query) {
+    return query.price === '*'
+      && query.cuisine === '*'
+      && query.suburb === '*';
+  }
+
+  function expandRestaurantQuery(query) {
+    if (query.price !== '*') return Object.assign({}, query, { price: '*' });
+    if (query.cuisine !== '*') return Object.assign({}, query, { cuisine: '*' });
+    if (query.suburb !== '*') return Object.assign({}, query, { suburb: '*' });
+  }
+
+  let currentSlots = { price, cuisine, suburb };
+  let restaurants = searchRestaurants(currentSlots);
+  let isSearchExpanded = false;
+  while (restaurants.length <= 0 && !isAllRestaurantQuery(currentSlots)) {
+    isSearchExpanded = true;
+    currentSlots = expandRestaurantQuery(currentSlots);
+    restaurants = searchRestaurants(currentSlots);
+  }
+
   if (restaurants.length <= 0) {
     const sessionAttributes = intentRequest.sessionAttributes || {};
 
@@ -100,7 +122,11 @@ function findRestaurants(intentRequest) {
     };
   }
 
-  return close('Here\'s what I found!', { sessionAttributes, responseCard: {
+  const message = isSearchExpanded
+    ? 'I couldn\'t find an exact match, but here are some other options'
+    : 'Here\'s what I found!';
+
+  return close(message, { sessionAttributes, responseCard: {
     contentType: 'application/vnd.amazonaws.card.generic',
     genericAttachments: restaurants.slice(0, 3).map((restaurant) => {
       const name = restaurant.name;

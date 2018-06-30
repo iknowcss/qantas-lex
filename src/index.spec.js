@@ -48,7 +48,7 @@ describe('lambda entry', () => {
           type: 'ElicitIntent',
           message: {
             contentType: "PlainText",
-            content: 'What kind of restaurant are you interested in?'
+            content: 'Describe the kind of restaurant you\'re interested in. You can include cuisine, suburb, and a price point'
           }
         }
       });
@@ -126,6 +126,59 @@ describe('lambda entry', () => {
           message: {
             contentType: 'PlainText',
             content: 'Here\'s what I found!'
+          },
+          responseCard: {
+            contentType: 'application/vnd.amazonaws.card.generic',
+            genericAttachments: [
+              {
+                title: '\"undefined\" in undefined',
+                subTitle: ' | $undefined and up'
+              }
+            ]
+          }
+        },
+      });
+    });
+
+    it('expands the search when a request returns no results', async () => {
+      searchRestaurantsStub
+        .onFirstCall().returns([])
+        .onSecondCall().returns([])
+        .onThirdCall().returns([ {} ]);
+
+      const result = await expect(handler(buildFindRestaurantsRequest({
+        slots: { CuisineSlot: 'Thai', SuburbSlot: 'Newtown', PriceSlot: 'cheap' }
+      }))).to.be.fulfilled;
+
+      // First attempt
+      expect(searchRestaurantsStub.args[0][0]).to.eql({
+        price: 'cheap',
+        cuisine: 'Thai',
+        suburb: 'Newtown'
+      });
+
+      // 1st expansion
+      expect(searchRestaurantsStub.args[1][0]).to.eql({
+        price: '*',
+        cuisine: 'Thai',
+        suburb: 'Newtown'
+      });
+
+      // 2nd expansion
+      expect(searchRestaurantsStub.args[2][0]).to.eql({
+        price: '*',
+        cuisine: '*',
+        suburb: 'Newtown'
+      });
+
+      expect(result).to.eql({
+        sessionAttributes: {},
+        dialogAction: {
+          type: 'Close',
+          fulfillmentState: 'Fulfilled',
+          message: {
+            contentType: 'PlainText',
+            content: 'I couldn\'t find an exact match, but here are some other options'
           },
           responseCard: {
             contentType: 'application/vnd.amazonaws.card.generic',
