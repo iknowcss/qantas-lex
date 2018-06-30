@@ -13,7 +13,7 @@ function parsePriceString(priceClass) {
   if (/more +than|at +least|above|expensive/.test(lowerString)) {
     return { min: parsedNumber, max: Infinity };
   }
-  if (/around|about|something +like|approx/.test(lowerString)) {
+  if (/or so|around|about|something +like|approx/.test(lowerString)) {
     return {
       min: Math.max(parsedNumber - 10, 0),
       max: parsedNumber + 10
