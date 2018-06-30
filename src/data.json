@@ -3,7 +3,7 @@
     {
       "name": "Saké",
       "suburb":  "The Rocks",
-      "cuisine": ["Japanese"],
+      "cuisine": ["Japanese", "seafood"],
       "price": "135",
       "imageUrl": "",
       "linkUrl": ""
@@ -43,7 +43,7 @@
     {
       "name": "Chica Bonita",
       "suburb":  "Manly",
-      "cuisine": ["mexican"],
+      "cuisine": ["mexican", "seafood"],
       "price": "40",
       "imageUrl": "",
       "linkUrl": ""

@@ -216,5 +216,11 @@ describe('searchRestaurants', () => {
       cuisine: 'any food',
       suburb: 'anywhere'
     })).to.have.length(testData.restaurants.length);
+
+    expect(searchRestaurants({
+      price: 'anything',
+      cuisine: 'whatever',
+      suburb: 'Sydney'
+    })).to.have.length(testData.restaurants.length);
   });
 });

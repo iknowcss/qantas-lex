@@ -123,7 +123,7 @@ function findRestaurants(intentRequest) {
   }
 
   const message = isSearchExpanded
-    ? 'I couldn\'t find an exact match, but here are some other options'
+    ? 'Hmm, I couldn\'t find an exact match, but here are some other options'
     : 'Here\'s what I found!';
 
   return close(message, { sessionAttributes, responseCard: {

@@ -178,7 +178,7 @@ describe('lambda entry', () => {
           fulfillmentState: 'Fulfilled',
           message: {
             contentType: 'PlainText',
-            content: 'I couldn\'t find an exact match, but here are some other options'
+            content: 'Hmm, I couldn\'t find an exact match, but here are some other options'
           },
           responseCard: {
             contentType: 'application/vnd.amazonaws.card.generic',

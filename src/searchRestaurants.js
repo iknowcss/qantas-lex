@@ -39,13 +39,14 @@ function priceClassToRange(priceClass) {
 }
 
 function isAny(s) {
-  return /^(any|anywhere|any +[a-z]+|)$/i.test((s || '').trim().toLowerCase())
+  return /^(whatever|any|any(where|thing)|any +[a-z]+|)$/i.test((s || '').trim().toLowerCase())
 }
 
 function normalizeQuery(query) {
   const { min: priceMin, max: priceMax } = priceClassToRange(query.price);
   const cuisine = isAny(query.cuisine) ? '*' : query.cuisine;
-  const suburb = isAny(query.suburb) ? '*' : query.suburb;
+  let suburb = isAny(query.suburb) ? '*' : query.suburb;
+  if (suburb.toLowerCase() === 'sydney') suburb = '*';
   return { priceMin, priceMax, cuisine, suburb };
 }
 
